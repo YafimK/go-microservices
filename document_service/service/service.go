@@ -6,7 +6,7 @@ import (
 )
 
 const bucketName = "documents"
-const dbName = "simple_service"
+const dbName = "DOCUMENT_SERVICE"
 
 type Service struct {
 	server           *common.WebServer
@@ -16,10 +16,16 @@ type Service struct {
 func (service Service) Routes() common.Routes {
 	return common.Routes{
 		{
-			"GetDocument",
-			"GET",
-			"/documents/{Id}",
-			service.serviceDbHandler.GetDocument(bucketName),
+			Name:    "GetDocument",
+			Method:  "GET",
+			Pattern: "/documents/{Id}",
+			Handler: service.serviceDbHandler.GetDocument(bucketName),
+		},
+		{
+			Name:    "HealthCheck",
+			Method:  "GET",
+			Pattern: "/HealthCheck",
+			Handler: service.serviceDbHandler.CheckDocumentServiceHealth(),
 		},
 	}
 

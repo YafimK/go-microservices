@@ -32,5 +32,26 @@ func (sdh DbHandler) GetDocument(bucket string) http.HandlerFunc {
 		w.WriteHeader(http.StatusOK)
 		w.Write(data)
 	}
+}
 
+func (sdh DbHandler) CheckDocumentServiceHealth() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		result := sdh.client.IsAlive()
+		isBucketExists := sdh.client.IsBucketExists("documents")
+		var status string
+		if result && isBucketExists {
+			status = "up"
+		} else {
+			status = "down"
+		}
+		data, _ := json.Marshal(model.HealthCheck{Status: status})
+		writeJsonResponse(w, http.StatusServiceUnavailable, data)
+	}
+}
+
+func writeJsonResponse(w http.ResponseWriter, status int, data []byte) {
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Content-Length", strconv.Itoa(len(data)))
+	w.WriteHeader(status)
+	w.Write(data)
 }

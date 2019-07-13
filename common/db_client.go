@@ -26,6 +26,23 @@ func (dbClient *DbDriver) AddBucket(bucketName string) error {
 	})
 }
 
+func (dbClient *DbDriver) IsAlive() bool {
+	return dbClient.db != nil
+}
+
+func (dbClient *DbDriver) IsBucketExists(bucketName string) bool {
+	result := dbClient.db.View(func(tx *bolt.Tx) error {
+		if result := tx.Bucket([]byte(bucketName)); result == nil {
+			return fmt.Errorf("bucket %v doesn't exist\n", bucketName)
+		}
+		return nil
+	})
+	if result == nil {
+		return true
+	}
+	return false
+}
+
 func (dbClient *DbDriver) AddValue(bucketName string, key []byte, value []byte) error {
 	return dbClient.db.Update(func(tx *bolt.Tx) error {
 		bucket := tx.Bucket([]byte(bucketName))

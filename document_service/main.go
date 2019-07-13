@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
 	"fmt"
 	"github.com/Yafimk/go-microservices/common"
 	"github.com/Yafimk/go-microservices/common/test"
@@ -11,12 +12,15 @@ import (
 	"strconv"
 )
 
-const appName = "simple_service"
+const appName = "DOCUMENT_SERVICE"
 
 func main() {
+	port := flag.String("port", "8080", "port number")
+	host := flag.String("host", "http://localhost", "host address (including protocol)")
+	flag.Parse()
 
 	fmt.Printf("Starting %v\n", appName)
-	dbClient, err := common.NewDbDriver("simple_service")
+	dbClient, err := common.NewDbDriver("DOCUMENT_SERVICE")
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
@@ -37,7 +41,7 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	webService := service.NewService(":8080")
+	webService := service.NewService(fmt.Sprintf("%v:%v/health", host, *port))
 	webService.Start()
 
 }
