@@ -45,7 +45,10 @@ func (dbClient *DbDriver) IsBucketExists(bucketName string) bool {
 
 func (dbClient *DbDriver) AddValue(bucketName string, key []byte, value []byte) error {
 	return dbClient.db.Update(func(tx *bolt.Tx) error {
-		bucket := tx.Bucket([]byte(bucketName))
+		bucket, err := tx.CreateBucketIfNotExists([]byte(bucketName))
+		if err != nil {
+			return err
+		}
 		return bucket.Put(key, value)
 	})
 }
@@ -54,6 +57,9 @@ func (dbClient *DbDriver) QueryValue(bucketName string, key string, valueUnMarsh
 	var value []byte
 	err := dbClient.db.View(func(tx *bolt.Tx) error {
 		bucket := tx.Bucket([]byte(bucketName))
+		if bucket == nil {
+			return fmt.Errorf("bucket doesn't exist")
+		}
 		value = bucket.Get([]byte(key))
 		if value == nil {
 			return fmt.Errorf("no value found for the key %v", key)
