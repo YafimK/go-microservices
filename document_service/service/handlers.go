@@ -3,7 +3,7 @@ package service
 import (
 	"encoding/json"
 	"github.com/Yafimk/go-microservices/common"
-	"github.com/Yafimk/go-microservices/document-service/model"
+	"github.com/Yafimk/go-microservices/common/model"
 	"github.com/gorilla/mux"
 	"net/http"
 	"strconv"
