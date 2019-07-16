@@ -1,0 +1,21 @@
+version: '3'
+services:
+  documents:
+    image: documents_service
+    build: ./document_service
+    ports:
+      - "8083:8083"
+    command: ["./DocumentServiceServer","-host","http://documents:8083"]
+    depends_on:
+      - data_seed
+
+  data_seed:
+    image: data_seeder
+    build: ./data_seed_service
+    command: ["./DataSeeder"]
+
+  health_check:
+    image: health_check_service
+    build: ./health_checker_service
+    command: ["./HealthChecker"]
+

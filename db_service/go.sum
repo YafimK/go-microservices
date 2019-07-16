@@ -1,0 +1,7 @@
+github.com/Yafimk/go-microservices/common v0.0.0-20190716175354-aea08058276b h1:4ZUyOalb2XYO5FZvv2QGUQRgdDKN5q1rR6AwGTREUaQ=
+github.com/Yafimk/go-microservices/common v0.0.0-20190716175354-aea08058276b/go.mod h1:GhgTqd6vAB0Bp763xZz4VrPXmDWJ7b1WQaBc8VAFOok=
+github.com/boltdb/bolt v1.3.1 h1:JQmyP4ZBrce+ZQu0dY660FMfatumYDLun9hBCUVIkF4=
+github.com/boltdb/bolt v1.3.1/go.mod h1:clJnj/oiGkjum5o1McbSZDSLxVThjynRyGBgiAx27Ps=
+github.com/gorilla/mux v1.7.3 h1:gnP5JzjVOuiZD07fKKToCAOjS0yOpj/qPETTXCCS6hw=
+github.com/gorilla/mux v1.7.3/go.mod h1:1lud6UwP+6orDFRuTfBEV8e9/aOM/c4fVVCaMa2zaAs=
+golang.org/x/sys v0.0.0-20190712062909-fae7ac547cb7/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
