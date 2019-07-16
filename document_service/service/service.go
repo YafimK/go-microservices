@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/Yafimk/go-microservices/document-service/common"
+	"github.com/Yafimk/go-microservices/common"
 	"log"
 )
 
@@ -19,13 +19,13 @@ func (service Service) Routes() common.Routes {
 			Name:    "GetDocument",
 			Method:  "GET",
 			Pattern: "/documents/{Id}",
-			Handler: service.serviceDbHandler.GetDocument(BucketName),
+			Handler: GetDocument(BucketName),
 		},
 		{
 			Name:    "HealthCheck",
 			Method:  "GET",
 			Pattern: "/HealthCheck",
-			Handler: service.serviceDbHandler.CheckDocumentServiceHealth(),
+			Handler: CheckDocumentServiceHealth(),
 		},
 	}
 

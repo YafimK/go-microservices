@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/Yafimk/go-microservices/document-service/document_service/service"
+	"github.com/Yafimk/go-microservices/document-service/service"
 )
 
 const appName = "DOCUMENT_SERVICE"

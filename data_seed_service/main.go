@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"github.com/Yafimk/go-microservices/document-service/common"
-	"github.com/Yafimk/go-microservices/document-service/document_service/model"
+	"github.com/Yafimk/go-microservices/common"
+	"github.com/Yafimk/go-microservices/document-service/model"
 	"log"
 	"strconv"
 )
