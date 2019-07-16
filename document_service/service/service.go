@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/Yafimk/go-microservices/common"
+	. "github.com/Yafimk/go-microservices/common"
 	"log"
 )
 
@@ -9,36 +9,37 @@ const BucketName = "documents"
 const DbName = "db"
 
 type Service struct {
-	server           *common.WebServer
+	server           *WebServer
 	serviceDbHandler *DbHandler
 }
 
-func (service Service) Routes() common.Routes {
-	return common.Routes{
+func (service Service) Routes() Routes {
+	return Routes{
 		{
 			Name:    "GetDocument",
 			Method:  "GET",
 			Pattern: "/documents/{Id}",
-			Handler: GetDocument(BucketName),
+			Handler: service.serviceDbHandler.GetDocument(BucketName),
 		},
 		{
 			Name:    "HealthCheck",
 			Method:  "GET",
 			Pattern: "/HealthCheck",
-			Handler: CheckDocumentServiceHealth(),
+			Handler: service.serviceDbHandler.CheckDocumentServiceHealth(),
 		},
 	}
 
 }
+
 func NewService(host string) *Service {
-	dbClient, err := common.NewDbDriver(DbName)
+	dbClient, err := NewDbDriver(DbName)
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
 	service := &Service{
-		common.NewWebServer(host),
-		&DbHandler{
-			dbClient,
+		server: NewWebServer(host),
+		serviceDbHandler: &DbHandler{
+			client: dbClient,
 		},
 	}
 
