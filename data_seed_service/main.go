@@ -1,21 +1,34 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"flag"
 	"fmt"
-	"github.com/Yafimk/go-microservices/common"
 	"github.com/Yafimk/go-microservices/common/model"
 	"log"
+	"net/http"
+	"net/url"
 	"strconv"
 )
 
-func SeedDbData(db *common.DbDriver, bucketName string, amount int, fakeDataGeneratorFunc func(seed int) []byte) error {
+type FakeDataGenerator func(seed int) []byte
+type Requester func(dbAddress string, data []byte) error
+
+func sendRequest(dbAddress string, data []byte) error {
+	resp, err := http.Post(fmt.Sprintf("%v/documents/Add", dbAddress), "application/json", bytes.NewReader(data))
+	if err != nil || resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("Failed ")
+	}
+	return nil
+}
+
+func seedDbData(dbAddress string, amount int, fakeDataGenerator FakeDataGenerator, requester Requester) error {
 	for i := 0; i < amount; i++ {
-		key := strconv.Itoa(10000 + i)
-		value := fakeDataGeneratorFunc(i)
-		if err := db.AddValue(bucketName, []byte(key), value); err != nil {
-			return err
+		value := fakeDataGenerator(i)
+		err := requester(dbAddress, value)
+		if err != nil {
+			log.Fatalln(err)
 		}
 	}
 	fmt.Printf("Seeded %v fake accounts...\n", amount)
@@ -23,16 +36,18 @@ func SeedDbData(db *common.DbDriver, bucketName string, amount int, fakeDataGene
 }
 
 func main() {
-
-	DbName := flag.String("db", "db", "database name")
-	BucketName := flag.String("bucket", "documents", "table (bucket) name")
+	dbAddress := flag.String("dbHost", "http://localhost:8082", "database address")
 	flag.Parse()
-	dbClient, err := common.NewDbDriver(*DbName)
+
+	bindAddress, err := url.Parse(*dbAddress)
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
+	if bindAddress.Scheme == "" {
+		log.Fatalln("Missing protocol in bind address. host address should be in the following format <protocol://host:port>")
+	}
 
-	err = SeedDbData(dbClient, *BucketName, 1000, func(seed int) []byte {
+	err = seedDbData(bindAddress.String(), 1000, func(seed int) []byte {
 		doc := model.Document{
 			Id:   strconv.Itoa(seed),
 			Name: "Person_" + strconv.Itoa(seed),
@@ -40,7 +55,7 @@ func main() {
 		}
 		jsonBytes, _ := json.Marshal(doc)
 		return jsonBytes
-	})
+	}, sendRequest)
 	if err != nil {
 		log.Fatalln(err)
 	}

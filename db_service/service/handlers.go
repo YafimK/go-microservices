@@ -24,6 +24,7 @@ func (sdh DbHandler) GetDocument(bucket string) http.HandlerFunc {
 		})
 		if err != nil {
 			w.WriteHeader(http.StatusNotFound)
+			fmt.Fprintf(w, fmt.Sprintf("Didn't find the document with id - %v\n", id))
 			return
 		}
 		document := rawResult.(model.Document)
@@ -66,7 +67,7 @@ func (sdh DbHandler) CheckDocumentServiceHealth() http.HandlerFunc {
 			status = "down"
 		}
 		data, _ := json.Marshal(model.HealthCheck{Status: status})
-		writeJsonResponse(w, http.StatusServiceUnavailable, data)
+		writeJsonResponse(w, http.StatusOK, data)
 	}
 }
 

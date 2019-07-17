@@ -16,13 +16,13 @@ func (service Service) Routes() Routes {
 		{
 			Name:    "GetDocument",
 			Method:  "GET",
-			Pattern: "/{Id}",
+			Pattern: "/document/{Id}",
 			Handler: service.GetDocument(service.bucketName),
 		},
 		{
 			Name:    "AddDocument",
 			Method:  "POST",
-			Pattern: "/Add",
+			Pattern: "/documents/Add",
 			Handler: service.AddDocument(service.bucketName),
 		},
 		{

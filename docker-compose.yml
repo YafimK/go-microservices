@@ -9,10 +9,20 @@ services:
     depends_on:
       - data_seed
 
+  database:
+    image: db_service
+    build: ./db_service
+    ports:
+      - "8082:8082"
+    command: ["./DbServiceServer","-host","http://database:8082"]
+
   data_seed:
     image: data_seeder
     build: ./data_seed_service
-    command: ["./DataSeeder"]
+    command: ["./DataSeeder","-dbHost","http://database:8082"]
+    depends_on:
+      - database
+
 
   health_check:
     image: health_check_service
