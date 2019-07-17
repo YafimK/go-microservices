@@ -8,13 +8,22 @@ services:
     command: ["./DocumentServiceServer","-host","http://documents:8083"]
     depends_on:
       - data_seed
+#      data_seed:
+#        condition: service_healthy
+      - database
+#          condition: service_healthy
 
   database:
     image: db_service
     build: ./db_service
     ports:
       - "8082:8082"
-    command: ["./DbServiceServer","-host","http://database:8082"]
+    command: ["./DbServiceServer","-bind","http://database:8082","-db","coke"]
+    healthcheck:
+      test: ["CMD-SHELL", "curl  http://database:8082/HealthCheck"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   data_seed:
     image: data_seeder
@@ -23,9 +32,8 @@ services:
     depends_on:
       - database
 
-
   health_check:
     image: health_check_service
     build: ./health_checker_service
-    command: ["./HealthChecker"]
+    command: ["./HealthChecker","-dbHost","http://database:8082"]
 
